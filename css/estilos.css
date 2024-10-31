@@ -5,6 +5,7 @@
     padding: 0;
   }
   
+/* Al body, usar flex (responsive) */
   body {
     display: flex;
     justify-content: center;
@@ -13,30 +14,36 @@
     font-family: Arial, sans-serif;
     background-color: #f0f0f0;
   }
+
+/* A todos los objetos de tipo button */
+  button {
+    cursor: pointer;
+  }
   
+/* Al elemento de clase contenedor */
   .contenedor {
     text-align: center;
     width: 300px;
   }
   
+/* Al elemento con ID palabraContenedor */
   #palabraContenedor {
     font-size: 24px;
     letter-spacing: 5px;
     margin-bottom: 20px;
   }
-  
+
+/* A los botones que letras que están dentro de letrasContenedor */
   #letrasContenedor button {
     margin: 5px;
     padding: 10px;
     font-size: 18px;
-    cursor: pointer;
   }
-  
+
   #reiniciarBtn {
     margin-top: 20px;
     padding: 10px 20px;
     font-size: 16px;
-    cursor: pointer;
   }
   
   #mensaje {

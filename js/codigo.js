@@ -23,15 +23,20 @@ function actualizarContenedorPalabra() {
 
 // Genera los botones de letras de la A a la Z
 function actualizarContenedorLetras() {
-  const contenedorLetras = document.getElementById("letrasContenedor");
-  contenedorLetras.innerHTML = "";
-  for (let i = 65; i <= 90; i++) { // Códigos ASCII de A a Z
-    const botonLetra = document.createElement("button");
-    botonLetra.textContent = String.fromCharCode(i);
-    botonLetra.onclick = manejarIntento; // Asigna la función para adivinar
-    contenedorLetras.appendChild(botonLetra);
+    const contenedorLetras = document.getElementById("letrasContenedor");
+    contenedorLetras.innerHTML = "";
+  
+    // Cadena de todas las letras del alfabeto
+    const letras = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
+  
+    // Iteramos sobre cada letra en la cadena
+    letras.split("").forEach(letra => {
+      const botonLetra = document.createElement("button");
+      botonLetra.textContent = letra;
+      botonLetra.onclick = manejarIntento; // Asigna la función de adivinar
+      contenedorLetras.appendChild(botonLetra);
+    });
   }
-}
 
 // Lógica para manejar cada intento de letra
 function manejarIntento(evento) {
