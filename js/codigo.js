@@ -1,6 +1,10 @@
 // Array con la lista de palabras para el juego
 const palabras = [
-    "HTML", "JAVASCRIPT", "CSS", "PROGRAMACION", "NAVEGADOR"
+    "HTML", 
+    "JAVASCRIPT", 
+    "CSS", 
+    "PROGRAMACION", 
+    "NAVEGADOR"
     ];
 
 
@@ -8,6 +12,9 @@ var palabraSecreta = "";      // Palabra a adivinar
 var letrasAdivinadas = [];    // Letras adivinadas (al principio son guiones bajos)
 var errores = 0;              // Número de errores cometidos
 const maxErrores = 6;         // Límite de errores para perder el juego
+
+// Llama a la función iniciarJuego al inicio.
+iniciarJuego();
 
 // Inicializa el juego seleccionando una palabra y configurando la pantalla
 function iniciarJuego() {
@@ -56,44 +63,25 @@ function revisarJugada(evento) {
       if (palabraSecreta[i] === letra) letrasAdivinadas[i] = letra;
     }
     actualizarContenedorPalabra();
-    //revisarVictoria();
-    revisarVictoriaDerrota();
+
+    // Revisar si el jugador ganó
+    if (!letrasAdivinadas.includes("_")) {
+        document.getElementById("mensaje").textContent = "¡Ganaste!";
+        desactivarBotones();
+    }
+
   } else {
     // Si la letra no está, cuenta un error
     errores++;
     document.getElementById("nerrores").textContent = "Te quedan "+(maxErrores - errores)+" intentos.";
-    //revisarDerrota();
-    revisarVictoriaDerrota();
-  }
-}
-
-// Verifica si el jugador ha ganado (todas las letras adivinadas)
-function revisarVictoria() {
-  if (!letrasAdivinadas.includes("_")) {
-    document.getElementById("mensaje").textContent = "¡Ganaste!";
-    desactivarBotones();
-  }
-}
-
-// Verifica si el jugador ha perdido (límite de errores alcanzado)
-function revisarDerrota() {
-  if (errores === maxErrores) {
-    document.getElementById("mensaje").textContent = `Perdiste! La palabra era: ${palabraSecreta}`;
-    desactivarBotones();
-  }
-}
-
-function revisarVictoriaDerrota() {
-    if (!letrasAdivinadas.includes("_")) {
-        document.getElementById("mensaje").textContent = "¡Ganaste!";
-        desactivarBotones(); 
-    }
+    
+    // Revisar si el jugador perdió
     if (errores === maxErrores) {
         document.getElementById("mensaje").textContent = `Perdiste! La palabra era: ${palabraSecreta}`;
         desactivarBotones();
-    }   
+    }
+  }
 }
-
 
 // Desactiva todos los botones de letras
 function desactivarBotones() {
@@ -102,6 +90,3 @@ function desactivarBotones() {
   botones.forEach(boton => boton.disabled = true);
 }
 
-// Asigna la función de reinicio al botón y ejecuta la inicialización al cargar
-document.getElementById("reiniciarBtn").onclick = iniciarJuego;
-iniciarJuego();
