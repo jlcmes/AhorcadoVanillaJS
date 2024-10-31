@@ -1,18 +1,22 @@
-// Lista de palabras para el juego
-const palabras = ["HTML", "JAVASCRIPT", "CSS", "PROGRAMACION", "NAVEGADOR"];
-var palabraSeleccionada = ""; // Palabra seleccionada al azar
-var letrasAdivinadas = [];    // Letras adivinadas (mostradas como guiones bajos)
+// Array con la lista de palabras para el juego
+const palabras = [
+    "HTML", "JAVASCRIPT", "CSS", "PROGRAMACION", "NAVEGADOR"
+    ];
+
+
+var palabraSecreta = "";      // Palabra a adivinar
+var letrasAdivinadas = [];    // Letras adivinadas (al principio son guiones bajos)
 var errores = 0;              // Número de errores cometidos
 const maxErrores = 6;         // Límite de errores para perder el juego
 
 // Inicializa el juego seleccionando una palabra y configurando la pantalla
 function iniciarJuego() {
-  palabraSeleccionada = palabras[Math.floor(Math.random() * palabras.length)]; // Elige una palabra al azar
-  letrasAdivinadas = Array(palabraSeleccionada.length).fill("_"); // Rellena con guiones bajos
+  palabraSecreta = palabras[Math.floor(Math.random() * palabras.length)]; // Elige una palabra al azar
+  letrasAdivinadas = Array(palabraSecreta.length).fill("_"); // Rellena con guiones bajos
   errores = 0;
   actualizarContenedorPalabra();
   actualizarContenedorLetras();
-  document.getElementById("mensaje").textContent = ""; // Limpia el mensaje
+  document.getElementById("mensaje").textContent = ""; // Quita los mensajes y numero de errores
   document.getElementById("nerrores").textContent = "";
 }
 
@@ -23,6 +27,7 @@ function actualizarContenedorPalabra() {
 
 // Genera los botones de letras de la A a la Z
 function actualizarContenedorLetras() {
+    // Apunto al contenedor de letras y lo vacío
     const contenedorLetras = document.getElementById("letrasContenedor");
     contenedorLetras.innerHTML = "";
   
@@ -30,35 +35,40 @@ function actualizarContenedorLetras() {
     const letras = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
   
     // Iteramos sobre cada letra en la cadena
-    letras.split("").forEach(letra => {
-      const botonLetra = document.createElement("button");
-      botonLetra.textContent = letra;
-      botonLetra.onclick = manejarIntento; // Asigna la función de adivinar
-      contenedorLetras.appendChild(botonLetra);
-    });
+    letras.split("").forEach(
+        // Para cada letra, llama a esta función en la que crea un botón nuevo
+        function(letra) {
+            const botonLetra = document.createElement("button");
+            botonLetra.textContent = letra;
+            botonLetra.onclick = revisarJugada; // Asigna la función de adivinar
+            contenedorLetras.appendChild(botonLetra);
+        }
+    );
   }
 
 // Lógica para manejar cada intento de letra
-function manejarIntento(evento) {
-  const letra = evento.target.textContent;
+function revisarJugada(evento) {
+  const letra = evento.target.textContent; // Obtiene la letra del botón que la llamó
   evento.target.disabled = true; // Desactiva el botón de la letra al ser usado
-  if (palabraSeleccionada.includes(letra)) {
+  if (palabraSecreta.includes(letra)) {
     // Si la letra está en la palabra, actualiza letrasAdivinadas
-    for (let i = 0; i < palabraSeleccionada.length; i++) {
-      if (palabraSeleccionada[i] === letra) letrasAdivinadas[i] = letra;
+    for (let i = 0; i < palabraSecreta.length; i++) {
+      if (palabraSecreta[i] === letra) letrasAdivinadas[i] = letra;
     }
     actualizarContenedorPalabra();
-    verificarVictoria();
+    //revisarVictoria();
+    revisarVictoriaDerrota();
   } else {
     // Si la letra no está, cuenta un error
     errores++;
     document.getElementById("nerrores").textContent = "Te quedan "+(maxErrores - errores)+" intentos.";
-    verificarDerrota();
+    //revisarDerrota();
+    revisarVictoriaDerrota();
   }
 }
 
 // Verifica si el jugador ha ganado (todas las letras adivinadas)
-function verificarVictoria() {
+function revisarVictoria() {
   if (!letrasAdivinadas.includes("_")) {
     document.getElementById("mensaje").textContent = "¡Ganaste!";
     desactivarBotones();
@@ -66,12 +76,24 @@ function verificarVictoria() {
 }
 
 // Verifica si el jugador ha perdido (límite de errores alcanzado)
-function verificarDerrota() {
+function revisarDerrota() {
   if (errores === maxErrores) {
-    document.getElementById("mensaje").textContent = `Perdiste! La palabra era: ${palabraSeleccionada}`;
+    document.getElementById("mensaje").textContent = `Perdiste! La palabra era: ${palabraSecreta}`;
     desactivarBotones();
   }
 }
+
+function revisarVictoriaDerrota() {
+    if (!letrasAdivinadas.includes("_")) {
+        document.getElementById("mensaje").textContent = "¡Ganaste!";
+        desactivarBotones(); 
+    }
+    if (errores === maxErrores) {
+        document.getElementById("mensaje").textContent = `Perdiste! La palabra era: ${palabraSecreta}`;
+        desactivarBotones();
+    }   
+}
+
 
 // Desactiva todos los botones de letras
 function desactivarBotones() {
