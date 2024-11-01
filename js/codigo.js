@@ -1,4 +1,4 @@
-// Array con la lista de palabras para el juego
+// Array con la lista de palabras para el juego (no pueden contener el carácter "_")
 const palabras = [
     "HTML", 
     "JAVASCRIPT", 
@@ -7,9 +7,8 @@ const palabras = [
     "NAVEGADOR"
     ];
 
-
-var palabraSecreta = "";      // Palabra a adivinar
-var letrasAdivinadas = [];    // Letras adivinadas (al principio son guiones bajos)
+var palabraSecreta = "";      // Palabra secreta a adivinar
+var letrasAdivinadas = [];    // Letras adivinadas de la palabra secreta
 var errores = 0;              // Número de errores cometidos
 const maxErrores = 6;         // Límite de errores para perder el juego
 
@@ -20,14 +19,16 @@ iniciarJuego();
 function iniciarJuego() {
   palabraSecreta = palabras[Math.floor(Math.random() * palabras.length)]; // Elige una palabra al azar
   letrasAdivinadas = Array(palabraSecreta.length).fill("_"); // Rellena con guiones bajos
+  
+  // Quita los mensajes y reinicia el numero de errores
   errores = 0;
   actualizarContenedorPalabra();
   actualizarContenedorLetras();
-  document.getElementById("mensaje").textContent = ""; // Quita los mensajes y numero de errores
+  document.getElementById("mensaje").textContent = "";
   document.getElementById("nerrores").textContent = "";
 }
 
-// Muestra la palabra con letras adivinadas o guiones bajos
+// Muestra las letras adivinadas hasta ahora en palabraContenedor
 function actualizarContenedorPalabra() {
   document.getElementById("palabraContenedor").textContent = letrasAdivinadas.join(" ");
 }
@@ -48,7 +49,7 @@ function actualizarContenedorLetras() {
             const botonLetra = document.createElement("button");
             botonLetra.textContent = letra;
             botonLetra.onclick = revisarJugada; // Asigna la función de adivinar
-            contenedorLetras.appendChild(botonLetra);
+            contenedorLetras.appendChild(botonLetra); // Agrego el botón de letra a letrasContenedor
         }
     );
   }
@@ -57,27 +58,30 @@ function actualizarContenedorLetras() {
 function revisarJugada(evento) {
   const letra = evento.target.textContent; // Obtiene la letra del botón que la llamó
   evento.target.disabled = true; // Desactiva el botón de la letra al ser usado
+  
   if (palabraSecreta.includes(letra)) {
-    // Si la letra está en la palabra, actualiza letrasAdivinadas
+    // Si la letra está en la palabra, actualiza letrasAdivinadas...
     for (let i = 0; i < palabraSecreta.length; i++) {
-      if (palabraSecreta[i] === letra) letrasAdivinadas[i] = letra;
+      if (palabraSecreta[i] == letra) letrasAdivinadas[i] = letra;
     }
     actualizarContenedorPalabra();
 
-    // Revisar si el jugador ganó
+    // ...y revisa si el jugador ganó
     if (!letrasAdivinadas.includes("_")) {
         document.getElementById("mensaje").textContent = "¡Ganaste!";
+        document.getElementById("nerrores").textContent = "";
         desactivarBotones();
     }
 
   } else {
-    // Si la letra no está, cuenta un error
+    // Si la letra no está, cuenta un error...
     errores++;
     document.getElementById("nerrores").textContent = "Te quedan "+(maxErrores - errores)+" intentos.";
     
-    // Revisar si el jugador perdió
-    if (errores === maxErrores) {
+    // ...y revisa si el jugador perdió
+    if (errores == maxErrores) {
         document.getElementById("mensaje").textContent = `Perdiste! La palabra era: ${palabraSecreta}`;
+        document.getElementById("nerrores").textContent = "";
         desactivarBotones();
     }
   }
@@ -87,6 +91,9 @@ function revisarJugada(evento) {
 function desactivarBotones() {
   // Selecciona todos los botones dentro de letrasContenedor y los desactiva.
   const botones = document.querySelectorAll("#letrasContenedor button"); 
-  botones.forEach(boton => boton.disabled = true);
+  botones.forEach(
+    function (boton)
+    { 
+        boton.disabled = true // Recorre los botones uno por uno y los desactiva
+    });
 }
-
